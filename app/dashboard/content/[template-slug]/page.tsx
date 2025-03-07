@@ -9,10 +9,7 @@ import OutputSection from "../_components/OutputSection";
 import { TEMPLATE } from "../../_components/TemplateListSection";
 import Templates from "@/app/(data)/Templates";
 import { chatSession } from "@/utils/AiModel";
-import { useUser } from "@clerk/nextjs";
-import moment from "moment";
-import { db } from "@/utils/db";
-import { AIOutput} from "@/utils/schema"; // Renamed import to avoid conflict
+import { useUser } from "@clerk/nextjs";// Renamed import to avoid conflict
 
 interface PROPS {
     params: {
@@ -41,7 +38,6 @@ function CreateNewContent(props: PROPS) {
             console.log(responseText);
             setAIOutput(responseText); // No name change
 
-            await SaveInDb(JSON.stringify(formData), selectedTemplate?.slug, responseText);
         } catch (error) {
             console.error("Error generating AI content:", error);
         } finally {
@@ -49,21 +45,6 @@ function CreateNewContent(props: PROPS) {
         }
     };
 
-    const SaveInDb = async (formData: any, slug: any, aiResp: string) => {
-        try {
-            const result = await db.insert(AIOutput).values({
-                formData: formData,
-                templateSlug: slug,
-                aiResponse: aiResp,
-                createdBy: user?.primaryEmailAddress?.emailAddress,
-                createdAt: moment().format("DD/MM/yyyy"),
-            });
-
-            console.log(result);
-        } catch (error) {
-            console.error("Error saving to DB:", error);
-        }
-    };
 
     return (
         <div className="p-10">
